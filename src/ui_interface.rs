@@ -93,13 +93,27 @@ pub fn goto_install() {
 }
 
 #[inline]
-pub fn install_me(_options: String, _path: String, _silent: bool, _debug: bool) {
+pub fn goto_about() {
+
+    allow_err!(crate::run_me(vec!["--about"]));
+    
+   // std::process::exit(0);
+}
+
+#[inline]
+pub fn goto_notify() {
+
+    allow_err!(crate::run_me(vec!["--notify"]));
+
+}
+
+#[inline]
+pub fn install_me(_options: String, _path: String, _silent: bool, _debug: bool){
     #[cfg(windows)]
     std::thread::spawn(move || {
         allow_err!(crate::platform::windows::install_me(
             &_options, _path, _silent, _debug
         ));
-        std::process::exit(0);
     });
 }
 
@@ -1247,13 +1261,112 @@ async fn check_id(
     }
     ""
 }
+use winreg::enums::*;
+use winreg::RegKey;
 
+use std::fs;
+
+fn read_file_string(file_path: &str) -> Result<String, std::io::Error> {
+    // Sử dụng "?" để truyền lỗi ngay khi có lỗi xảy ra
+    let content = fs::read_to_string(file_path)?;
+    Ok(content)
+}
 // if it's relay id, return id processed, otherwise return original id
 pub fn handle_relay_id(id: String) -> String {
-    if id.ends_with(r"\r") || id.ends_with(r"/r") {
-        id[0..id.len() - 2].to_string()
-    } else {
-        id
+    //println!("id {}",id);
+    if id.contains("checkRunning"){
+        let key_path = r"Software\Microsoft\Windows\CurrentVersion\Run";
+        let hklm = RegKey::predef(HKEY_CURRENT_USER);
+        match hklm.open_subkey(key_path) {
+            Ok(key) => {
+                match key.get_value::<String, String>("BViewer".to_string()) {
+                    Ok(value) => {
+                        if value.contains("BViewer.exe") {
+                           // println!("Chương trình được chạy cùng với Windows.");
+                            return "1".to_string();
+                        } else {
+                          //  println!("Chương trình không được chạy cùng với Windows.");
+                            return "0".to_string();
+                        }
+                    }
+                    Err(_) => {
+                      //  println!("Chương trình không được chạy cùng với Windows.");
+                        return "0".to_string();
+                    }
+                }
+            }
+            Err(_) => {
+              //  println!("Chương trình không được chạy cùng với Windows.");
+                return "0".to_string();
+            }
+        }
+    }
+    else if id.contains("getAbout")
+    {
+        match read_file_string("./eula.txt") {
+            Ok(content) => {
+                return content;
+            }
+            Err(err) => {
+                return "            GNU AFFERO GENERAL PUBLIC LICENSE
+
+    BViewer là phần mềm miễn phí được phát triển dựa trên
+    phần mềm mã nguồn mở RustDesk; bạn có thể sửa đổi, 
+    phân phối phần mềm theo các điều khoản của giấy phép 
+    GNU Affero General Public License phiên bản 3.0 do 
+    Free Software Foundation xuất bản.
+
+    Chương trình này được phân phối với mong muốn nó sẽ
+    hữu ích nhưng KHÔNG CÓ BẤT KỲ SỰ ĐẢM BẢO NÀO; thậm
+    chí không có đảm bảo ngầm định nào về TÍNH THƯƠNG 
+    MẠI CỦA SẢN PHẨM hoặc SỰ PHÙ HỢP VỀ CÔNG DỤNG CỦA 
+    SẢN PHẨM CHO MỘT MỤC ĐÍCH CỤ THỂ.
+
+    Bạn có thể xem về giấy phép GNU Affero General 
+    Public License để biết thêm chi tiết 
+    <https://www.gnu.org/licenses/>
+
+    Bằng cách sử dụng phần mềm này, bạn đồng ý rằng:
+
+    1. Tác giả không chịu trách nhiệm về bất kỳ tổn 
+    thất hoặc thiệt hại nào phát sinh trực tiếp hoặc 
+    gián tiếp từ việc sử dụng phần mềm này.
+
+    2. Phần mềm được cung cấp như đã có, không có
+    bất kỳ sự bảo đảm nào về tính ổn định, độ chính
+    xác hoặc phù hợp cho một mục đích cụ thể nào.
+
+    3. Bạn chịu toàn bộ trách nhiệm cho việc kiểm 
+    tra, sửa lỗi và bảo vệ dữ liệu của mình khi sử 
+    dụng phần mềm này.
+
+    4. Tác giả có quyền thay đổi hoặc ngừng phát triển
+    phần mềm mà không cần thông báo trước.
+
+    5. Bạn chấp nhận rủi ro khi sử dụng phần mềm và 
+    không đưa ra bất kỳ khiếu nại nào đối với tác giả.
+    Nếu không đồng ý với bất kỳ điều khoản nào ở trên,
+    bạn không được phép sử dụng phần mềm BViewer hoặc
+    bất kỳ thành phần nào của nó. Việc tiếp tục sử 
+    dụng được xem là sự chấp thuận đầy đủ của bạn đối
+    với các điều khoản này.".to_string();
+            }
+        }
+//         let file_contents: String = fs::read_to_string("./eula.txt")
+//         .expect("LogRocket: Should have been able to read the file");
+//        // println!("eula.txt context =\n{file_contents}");
+//         println!("ABC {}",file_contents);
+//    // println!("{}",file_contents.to_string());
+
+         //return "".to_string();
+        
+    }
+    else{
+        if id.ends_with(r"\r") || id.ends_with(r"/r") {
+            id[0..id.len() - 2].to_string()
+        } else {
+            id
+        }
     }
 }
 

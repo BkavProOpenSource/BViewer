@@ -1,3 +1,7 @@
+extern crate winapi;
+use std::ffi::OsStr;
+use std::os::windows::ffi::OsStrExt;
+
 #[cfg(any(target_os = "android", target_os = "ios", feature = "flutter"))]
 use std::iter::FromIterator;
 #[cfg(windows)]
@@ -101,6 +105,8 @@ pub trait InvokeUiCM: Send + Clone + 'static + Sized {
     fn update_voice_call_state(&self, client: &Client);
 
     fn file_transfer_log(&self, log: String);
+
+    fn file_action_log(&self, log: String);
 }
 
 impl<T: InvokeUiCM> Deref for ConnectionManager<T> {
@@ -410,12 +416,32 @@ impl<T: InvokeUiCM> IpcTaskRunner<T> {
                                             handle_fs(fs, &mut write_jobs, &self.tx, Some(&tx_log)).await;
                                         }
                                     } else {
+                                        let mut file_action_log = String::new();
+                                        // action = 0 -> recv file
+                                        // action = 1 -> send file
+                                        // action = 2 -> delete file
+                                        // action = 3 -> delete folder
+                                        match fs {
+                                            ipc::FS::RemoveDir { ref path, id, recursive } => {
+                                                file_action_log = "{\"action\":3,\"path\":\"".to_owned() + path + "\",\"connId\":" + &self.conn_id.to_string();
+                                                let _log = file_action_log.replace("\\", "\\\\");
+                                                self.cm.ui_handler.file_action_log(_log)
+                                            }
+                                            ipc::FS::RemoveFile { ref path, id, file_num } => {
+                                                file_action_log = "{\"action\":2,\"path\":\"".to_owned() + path + "\",\"connId\":" + &self.conn_id.to_string();
+                                                let _log = file_action_log.replace("\\", "\\\\");
+                                                self.cm.ui_handler.file_action_log(_log)
+                                            }
+                                            _ => {}
+                                        }
                                         handle_fs(fs, &mut write_jobs, &self.tx, Some(&tx_log)).await;
                                     }
-                                    let log = fs::serialize_transfer_jobs(&write_jobs);
-                                    self.cm.ui_handler.file_transfer_log(log);
+                                    // log ghi file (write block)
+                                    //let log = fs::serialize_transfer_jobs(&write_jobs);
+                                    //self.cm.ui_handler.file_transfer_log(log);
                                 }
                                 Data::FileTransferLog(log) => {
+                                    // Log send file
                                     self.cm.ui_handler.file_transfer_log(log);
                                 }
                                 #[cfg(not(any(target_os = "android", target_os = "ios")))]
@@ -519,6 +545,7 @@ impl<T: InvokeUiCM> IpcTaskRunner<T> {
                     }
                 },
                 Some(job_log) = rx_log.recv() => {
+                    // Log recv file
                     self.cm.ui_handler.file_transfer_log(job_log);
                 }
             }
@@ -961,4 +988,11 @@ pub fn close_voice_call(id: i32) {
         #[cfg(not(any(target_os = "ios")))]
         allow_err!(client.tx.send(Data::CloseVoiceCall("".to_owned())));
     };
+}
+
+fn output_debug_string(message: &str) {
+    let wide_message: Vec<u16> = OsStr::new(message).encode_wide().chain(Some(0).into_iter()).collect();
+    unsafe {
+        winapi::um::debugapi::OutputDebugStringW(wide_message.as_ptr());
+    }
 }

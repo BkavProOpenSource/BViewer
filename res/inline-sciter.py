@@ -27,6 +27,8 @@ remote = open('src/ui/remote.html').read() \
 
 chatbox = open('src/ui/chatbox.html').read()
 install = open('src/ui/install.html').read().replace('include "install.tis";', open('src/ui/install.tis').read())
+about = open('src/ui/about.html').read().replace('include "about.tis";', open('src/ui/about.tis').read())
+notify = open('src/ui/notify.html').read().replace('include "notify.tis";', open('src/ui/notify.tis').read())
 
 cm = open('src/ui/cm.html').read() \
     .replace('@import url(cm.css);', open('src/ui/cm.css').read()) \
@@ -48,6 +50,8 @@ with open('src/ui/inline.rs', 'wt') as fh:
     fh.write('const _CHATBOX: ' + compress(strip(chatbox)) + ';\n')
     fh.write('const _INSTALL: ' + compress(strip(install)) + ';\n')
     fh.write('const _CONNECTION_MANAGER: ' + compress(strip(cm)) + ';\n')
+    fh.write('const _ABOUT: ' + compress(strip(about)) + ';\n')
+    fh.write('const _NOTIFY: ' + compress(strip(notify)) + ';\n')
     fh.write('''
 fn get(data: &[u8]) -> String {
     String::from_utf8_lossy(data).to_string()
@@ -69,6 +73,14 @@ pub fn get_remote() -> String {
 #[inline]
 pub fn get_install() -> String {
     replace(&_INSTALL[..])
+}
+#[inline]
+pub fn get_about() -> String {
+    replace(&_ABOUT[..])
+}
+#[inline]
+pub fn get_notify() -> String {
+    replace(&_NOTIFY[..])
 }
 #[inline]
 pub fn get_chatbox() -> String {

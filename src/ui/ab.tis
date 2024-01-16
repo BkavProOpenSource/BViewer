@@ -46,11 +46,6 @@ class AddressBook: Reactor.Component
                     })}
                 </div>
             </div>
-            <div .right-pane>
-                <div .right-content style="padding-top:0; padding-right: 0;">
-                    <SessionList sessions={peers} type="ab" />
-                </div>
-            </div>
         </div>;
     }
 
@@ -239,10 +234,7 @@ class SearchBar: Reactor.Component {
         var value = searchPatterns[this.type] || "";
         var me = this;
         self.timer(1ms, function() { (me.search_id || {}).value = value; });
-        return <div .search-id style="margin-left: 12px">
-            <span .search-icon>{search_icon}</span>
-            <input|text @{this.search_id} novalue={translate("Search ID")} />
-            {value && <span .clear-input>{clear_icon}</span>}
+        return <div>
         </div>;
     }
 
@@ -269,9 +261,7 @@ class SessionStyle: Reactor.Component {
 
     function render() {
         var sessionsStyle = getSessionsStyle(this.type);
-        return <div .sessions-tab style="margin-left: 0.5em;">
-                <span class={sessionsStyle == "tile" ? "active" : "inactive"}>{svg_tile}</span>
-                <span class={sessionsStyle != "tile" ? "active" : "inactive"}>{svg_list}</span>
+        return <div >
             </div>;
     }
 
@@ -317,30 +307,11 @@ class SessionList: Reactor.Component {
     function render() {
         var sessions = this.getSessions();
         if (sessions.length == 0) {
-            return <div style="margin: *; font-size: 1.6em; width: 100px; text-align: center;">{translate("Empty")}</div>;
+            return <div></div>;
         }
         var me = this;
         sessions = sessions.map(function(x) { return me.getSession(x); });
-        return <div .recent-sessions-content key={sessions.length}>
-            <popup>
-                <menu.context #remote-context>
-                    <li #connect>{translate('Connect')}</li>
-                    <li #transfer>{translate('Transfer File')}</li>
-                    <li #tunnel>{translate('TCP Tunneling')}</li>
-                    <li #force-always-relay><span>{svg_checkmark}</span>{translate('Always connect via relay')}</li>
-                    <li #rdp>RDP<EditRdpPort /></li>
-                    <li #wol>{translate('WOL')}</li>
-                    <div .separator />
-                    {this.type != "lan" && <li #rename>{translate('Rename')}</li>}
-                    {this.type != "fav" && <li #remove>{translate('Remove')}</li>}
-                    {is_win && <li #shortcut>{translate('Create Desktop Shortcut')}</li>}
-                    <li #forget-password>{translate('Forget Password')}</li>
-                    {(!this.type || this.type == "fav") && <li #add-fav>{translate('Add to Favorites')}</li>}
-                    {(!this.type || this.type == "fav") && <li #remove-fav>{translate('Remove from Favorites')}</li>}
-                    {this.type == "ab" && <li #edit-tag>{translate('Edit Tag')}</li>}
-                </menu>
-            </popup>
-            {sessions}
+        return <div>
         </div>;
     }
 
@@ -350,31 +321,8 @@ class SessionList: Reactor.Component {
         var hostname = s[2] || s.hostname || "";
         var platform = s[3] || s.platform || "";
         var alias = s[4] || s.alias || "";
-        if (this.style == "list") {
-            return <div .remote-session-link .remote-session-list id={id} platform={platform} title={alias ? "ID: " + id : ""}>
-                <div .platform style={"background:"+string2RGB(id+platform, 0.5)}>
-                    {platform && platformSvg(platform, "white")}
-                </div>
-                <div .name>
-                    <div>
-                        <div #alias .ellipsis>{alias ? alias : formatId(id)}</div>
-                        <div .username .ellipsis>{username}@{hostname}</div>
-                    </div>
-                </div>
-                <div>
-                    {svg_menu}
-                </div>
-            </div>;
-        }
-        return <div .remote-session-link .remote-session id={id} platform={platform} title={alias ? "ID: " + id : ""} style={"background:"+string2RGB(id+platform, 0.5)}>
-            <div .platform>
-                {platform && platformSvg(platform, "white")}
-                <div .username .ellipsis>{username}@{hostname}</div>
-            </div>
-            <div .text>
-                <div #alias .ellipsis>{alias ? alias : formatId(id)}</div>
-                {svg_menu}
-            </div>
+       
+        return <div>
         </div>;
     }
 
@@ -538,15 +486,7 @@ class MultipleSessions: Reactor.Component {
     function render() {
         var type = getSessionsType();
         return  <div style="size: *">
-                <div .sessions-bar>
-                    <div style="width:*" .sessions-tab #sessions-type>
-                        <span class={!type ? 'active' : 'inactive'}>{translate('Recent Sessions')}</span>
-                        <span #fav class={type == "fav" ? 'active' : 'inactive'}>{translate('Favorites')}</span>
-                        {handler.is_installed() && <span #lan class={type == "lan" ? 'active' : 'inactive'}>{translate('Discovered')}</span>}
-                        <span #ab class={type == "ab" ? 'active' : 'inactive'}>{translate('Address Book')}</span>
-                    </div>
-                    {!this.hidden && <SearchBar type={type} />}
-                    {!this.hidden && <SessionStyle type={type} />}
+                <div>
                 </div>
                 {!this.hidden && 
                 ((type == "fav" && <Favorites />) ||

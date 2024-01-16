@@ -1,20 +1,20 @@
 html {
-    background-color: transparent;
-    var(gray-bg-osx): rgba(238, 238, 238, 0.75);
+    background-color: white;
+    var(gray-bg-osx): rgba(255, 255, 255, 0);
 }
 
-body {
+/* body {
     overflow: hidden;
-}
+} */
 
 @media platform != "OSX" {
     body {
-        border-top: color(border) solid 1px;
+        border-top: color(border) solid 0px;
     }
 }
 
 .title {
-    font-size: 1.4em;
+
 }
 
 .app {
@@ -28,12 +28,15 @@ body {
 }
 
 .left-pane {
-    width: 200px;
+    width: 555px;
     height: *;
     background: color(bg);
-    border-right: color(border) 1px solid;
-}
 
+}
+span.left-pane {
+    left: 0px;
+    top:0px;
+}
 #ab .left-pane {
     background: white;
     border-radius: 1em;
@@ -57,6 +60,37 @@ body {
   word-wrap: break-word;
 }
 
+div.connect-status {
+    left: 20px;
+    width: 100%;
+    padding: 1em;
+}
+
+div.connect-status > span.connect-status-icon {
+    border-radius: 4px;
+    width: 8px;
+    height: 8px;
+    display: inline-block;
+    margin-right: 1em;
+}
+
+
+div.connect-status > span.link {
+  margin-left: 1em;
+  display: inline-block;
+}
+
+span.connect-status-1 {
+    background: #e04f5f;
+}
+
+span.connect-status1 {
+    background: #0075FF;
+}
+
+span.connect-status0 {
+    background: #F5853B;
+}
 div.sessions-bar {
     color: color(light-text);
     padding-top: 0.5em;
@@ -67,7 +101,7 @@ div.sessions-bar {
 }
 
 div.sessions-tab span {
-    display: inline-block;
+    /* display: inline-block; */
     padding: 6px 8px;
     cursor: pointer;
     @ELLIPSIS;
@@ -90,7 +124,9 @@ div.search-id {
     position: relative;
     display: inline-block;
 }
-
+span.refresh-icon {
+    left: 0px;
+}
 div.search-id input {
     font-size: 1em;
     height: 20px;
@@ -109,6 +145,17 @@ div.search-id svg {
     size: 14px;
 }
 
+div.eye-area span {
+    position: absolute;
+    top: 0px;
+    padding: 6px;
+    color: color(border);
+
+}
+
+div.eye-area svg {
+    size: 24px;
+}
 span.search-icon {
     left: 0px;
 }
@@ -180,7 +227,7 @@ span.clear-input:hover {
 .right-buttons>button {
     margin-left: 1.6em;
 }
-
+/* 
 div.connect-status {
     left: 240px;
     border-top: color(border) solid 1px;
@@ -212,7 +259,7 @@ span.connect-status1 {
 
 span.connect-status0 {
     background: #F5853B;
-}
+} */
 
 div.recent-sessions-content {
     border-spacing: 1em;

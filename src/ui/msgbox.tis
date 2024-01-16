@@ -24,6 +24,9 @@ function closeMsgbox() {
     $(#msgbox).content(<span />);
 }
 
+var svg_close = <svg #btclose width="12" height="12" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1.67045 0.454545L3.23864 3.13068L4.80682 0.454545H5.96591L3.85227 3.72727L5.96591 7H4.80682L3.23864 4.46023L1.67045 7H0.511364L2.59091 3.72727L0.511364 0.454545H1.67045Z" fill="black"/>
+</svg>;
 class MsgboxComponent: Reactor.Component {
     function this(params) {
         this.width = params.width;
@@ -114,7 +117,7 @@ class MsgboxComponent: Reactor.Component {
         if (this.type.indexOf("error") >= 0 || this.type == "re-input-password" || this.type == "session-re-login" || this.type == "session-login-re-password") {
             return "#e04f5f";
         }
-        return "#2C8CFF";
+        return "#F87738";
     }
 
     function hasSkip() {
@@ -122,6 +125,137 @@ class MsgboxComponent: Reactor.Component {
     }
 
     function render() {
+        if(this.type == "custom-password")
+        {
+        this.set_outline_focus();
+        var color = this.getColor();
+        var icon = this.getIcon(color);
+        var content = this.getContent();
+        var hasCancel = this.type.indexOf("error") < 0 && this.type.indexOf("nocancel") < 0 && this.type != "restarting";
+        var hasOk = this.type != "connecting" && this.type != "success" && this.type.indexOf("nook") < 0;
+        var hasLink = this.link != "";
+        var hasClose = this.type.indexOf("hasclose") >= 0;
+        var show_progress = this.type == "connecting";
+        var me = this;
+        self.timer(0, msgboxTimerFunc);
+        msgboxTimerFunc = function() {
+            if (typeof content == "string")
+                me.$(#content).html = translate(content);
+            else
+                me.$(#content).content(content);
+        };
+        self.timer(3ms, msgboxTimerFunc);
+        return (<div><div style="position: absolute; size:*; background:black; opacity:0.5;" />
+        <div style="size: *; position: absolute;">
+            <div style={"border: " + color + " solid 1px; background: color(bg); margin: *; width:451px; min-height:239px"}>
+            <div .caption style={"background: " + color}>
+                {translate(this.title)}
+            </div>         
+            <div style="padding: 1em 2em; size: *;">
+                <div style="height: *; flow: horizontal;">
+                    <div style={"size: *; margin: * 0; margin-top: 25px; "} #content />
+                </div>
+                <div style="text-align: right;">                   
+                    <progress #progress style={"color:" + color + "; display: " + (show_progress ? "inline-block" : "none")} />
+                    {<button style ="position: absolute;left:251px; top:250px;" .button #cancel .outline >Cancel</button> }
+                    {<button style ="position: absolute;left:137px; top:250px;" .button #submit >OK</button>}
+                </div>
+            </div>
+            </div>
+        </div></div>);
+        }
+        else if(this.type == "custom-nocancel-nook-hasclose")
+        {
+        this.set_outline_focus();
+        var color = this.getColor();
+        var icon = this.getIcon(color);
+        var content = this.getContent();
+        var hasCancel = this.type.indexOf("error") < 0 && this.type.indexOf("nocancel") < 0 && this.type != "restarting";
+        var hasOk = this.type != "connecting" && this.type != "success" && this.type.indexOf("nook") < 0;
+        var hasLink = this.link != "";
+        var hasClose = this.type.indexOf("hasclose") >= 0;
+        var show_progress = this.type == "connecting";
+        var me = this;
+        self.timer(0, msgboxTimerFunc);
+        msgboxTimerFunc = function() {
+            if (typeof content == "string")
+                me.$(#content).html = translate(content);
+            else
+                me.$(#content).content(content);
+        };
+        self.timer(3ms, msgboxTimerFunc);
+        return (<div><div style="position: absolute; size:*; background:black; opacity:0.5;" />
+        <div style="size: *; position: absolute;">
+            <div style={"border: " + color + " solid 1px; background: color(bg); margin: *; width:500px; height:330px"}>
+            <div .caption style={"background:white ; color: black; text-align:center; font-size:14px;"}>
+                {translate(this.title)}
+            </div>
+             <div style="height: *; flow: horizontal">
+                    {icon && <div style="height: *; margin: * 0; padding-right: 2em;" .msgbox-icon>{icon}</div>}
+                    <div style={this.contentStyle || "size: *; margin: * 0;"} #content />
+                </div>
+
+            <div style="padding: 1em 2em; size: *;">
+                <div style="height: *; flow: horizontal">
+                    <div style={this.contentStyle || "size: *; margin: * 0;"} #content />
+                </div>
+                <div style="text-align: right;">
+                    <span style="display:inline-block; max-width: 250px; font-size:12px;" #error />
+                    <progress #progress style={"color:" + color + "; display: " + (show_progress ? "inline-block" : "none")} />
+                    <span #btclose style="position: absolute; top:35px; left: 495px;">{svg_close}</span> 
+                </div>
+            </div>
+            </div>
+        </div></div>);
+        }
+         else if(this.type == "custom-nocancel-nook")
+        {
+            this.set_outline_focus();
+        var color = this.getColor();
+        var icon = this.getIcon(color);
+        var content = <svg width="101" height="62" viewBox="0 0 101 62" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_51_63)">
+<rect width="101" height="62" fill="white"/>
+<rect y="6" width="101" height="56" rx="8" fill="#1D1D1F"/>
+<path d="M25.8438 40.2344C24.7188 40.8698 23.4688 41.1875 22.0938 41.1875C20.4948 41.1875 19.2005 40.6719 18.2109 39.6406C17.2266 38.6094 16.7344 37.2448 16.7344 35.5469C16.7344 33.8125 17.2812 32.3906 18.375 31.2812C19.474 30.1667 20.8646 29.6094 22.5469 29.6094C23.7656 29.6094 24.7891 29.8073 25.6172 30.2031V31.6562C24.7109 31.0833 23.638 30.7969 22.3984 30.7969C21.1432 30.7969 20.1146 31.2292 19.3125 32.0938C18.5104 32.9583 18.1094 34.0781 18.1094 35.4531C18.1094 36.8698 18.4818 37.9844 19.2266 38.7969C19.9714 39.6042 20.9818 40.0078 22.2578 40.0078C23.1328 40.0078 23.8906 39.8333 24.5312 39.4844V36.3438H22.0781V35.1562H25.8438V40.2344ZM28.9375 30.9688C28.7083 30.9688 28.513 30.8906 28.3516 30.7344C28.1901 30.5781 28.1094 30.3802 28.1094 30.1406C28.1094 29.901 28.1901 29.7031 28.3516 29.5469C28.513 29.3854 28.7083 29.3047 28.9375 29.3047C29.1719 29.3047 29.3698 29.3854 29.5312 29.5469C29.6979 29.7031 29.7812 29.901 29.7812 30.1406C29.7812 30.3698 29.6979 30.5651 29.5312 30.7266C29.3698 30.888 29.1719 30.9688 28.9375 30.9688ZM29.5625 41H28.2812V33H29.5625V41ZM38.9844 31.0312H40.0312C40.1302 31.3229 40.1797 31.6771 40.1797 32.0938C40.1797 33.0938 39.6094 33.6979 38.4688 33.9062C39.1458 34.6406 39.4844 35.6615 39.4844 36.9688C39.4844 38.2448 39.1224 39.2682 38.3984 40.0391C37.6797 40.8047 36.7135 41.1875 35.5 41.1875C34.3177 41.1875 33.3724 40.8151 32.6641 40.0703C31.9609 39.3203 31.6094 38.3281 31.6094 37.0938C31.6094 35.75 31.9766 34.7005 32.7109 33.9453C33.4453 33.1901 34.4375 32.8125 35.6875 32.8125C35.9375 32.8125 36.2865 32.849 36.7344 32.9219C37.0521 32.974 37.4948 33 38.0625 33C38.3698 33 38.625 32.9089 38.8281 32.7266C39.0365 32.5391 39.1406 32.3151 39.1406 32.0547C39.1406 31.6745 39.0885 31.3333 38.9844 31.0312ZM35.5938 33.8906C34.7708 33.8906 34.1198 34.1719 33.6406 34.7344C33.1615 35.2917 32.9219 36.0625 32.9219 37.0469C32.9219 37.9948 33.1641 38.7422 33.6484 39.2891C34.1328 39.8359 34.7812 40.1094 35.5938 40.1094C36.4219 40.1094 37.0573 39.8411 37.5 39.3047C37.9479 38.7682 38.1719 38.0052 38.1719 37.0156C38.1719 36.0156 37.9479 35.2448 37.5 34.7031C37.0573 34.1615 36.4219 33.8906 35.5938 33.8906ZM37.7109 28.9219L35.6641 31.4844H34.6719L36.4141 28.9219H37.7109ZM42.375 30.9688C42.1458 30.9688 41.9505 30.8906 41.7891 30.7344C41.6276 30.5781 41.5469 30.3802 41.5469 30.1406C41.5469 29.901 41.6276 29.7031 41.7891 29.5469C41.9505 29.3854 42.1458 29.3047 42.375 29.3047C42.6094 29.3047 42.8073 29.3854 42.9688 29.5469C43.1354 29.7031 43.2188 29.901 43.2188 30.1406C43.2188 30.3698 43.1354 30.5651 42.9688 30.7266C42.8073 30.888 42.6094 30.9688 42.375 30.9688ZM43 41H41.7188V33H43V41ZM53.6953 40.9219C53.3932 41.0885 52.9948 41.1719 52.5 41.1719C51.099 41.1719 50.3984 40.3906 50.3984 38.8281V34.0938H49.0234V33H50.3984V31.0469L51.6797 30.6328V33H53.6953V34.0938H51.6797V38.6016C51.6797 39.138 51.7708 39.5208 51.9531 39.75C52.1354 39.9792 52.4375 40.0938 52.8594 40.0938C53.1823 40.0938 53.4609 40.0052 53.6953 39.8281V40.9219ZM62.0469 41H60.7656V36.3906C60.7656 34.724 60.1458 33.8906 58.9062 33.8906C58.2812 33.8906 57.7552 34.1328 57.3281 34.6172C56.901 35.0964 56.6875 35.7135 56.6875 36.4688V41H55.4062V29.1562H56.6875V34.3281H56.7188C57.3333 33.3177 58.2083 32.8125 59.3438 32.8125C61.1458 32.8125 62.0469 33.8984 62.0469 36.0703V41ZM65.125 30.9688C64.8958 30.9688 64.7005 30.8906 64.5391 30.7344C64.3776 30.5781 64.2969 30.3802 64.2969 30.1406C64.2969 29.901 64.3776 29.7031 64.5391 29.5469C64.7005 29.3854 64.8958 29.3047 65.125 29.3047C65.3594 29.3047 65.5573 29.3854 65.7188 29.5469C65.8854 29.7031 65.9688 29.901 65.9688 30.1406C65.9688 30.3698 65.8854 30.5651 65.7188 30.7266C65.5573 30.888 65.3594 30.9688 65.125 30.9688ZM65.75 41H64.4688V33H65.75V41ZM74.7734 37.3203H69.125C69.1458 38.2109 69.3854 38.8984 69.8438 39.3828C70.3021 39.8672 70.9323 40.1094 71.7344 40.1094C72.6354 40.1094 73.4635 39.8125 74.2188 39.2188V40.4219C73.5156 40.9323 72.5859 41.1875 71.4297 41.1875C70.2995 41.1875 69.4115 40.8255 68.7656 40.1016C68.1198 39.3724 67.7969 38.349 67.7969 37.0312C67.7969 35.7865 68.1484 34.7734 68.8516 33.9922C69.5599 33.2057 70.4375 32.8125 71.4844 32.8125C72.5312 32.8125 73.3411 33.151 73.9141 33.8281C74.487 34.5052 74.7734 35.4453 74.7734 36.6484V37.3203ZM73.4609 36.2344C73.4557 35.4948 73.276 34.9193 72.9219 34.5078C72.5729 34.0964 72.0859 33.8906 71.4609 33.8906C70.8568 33.8906 70.3438 34.1068 69.9219 34.5391C69.5 34.9714 69.2396 35.5365 69.1406 36.2344H73.4609ZM73.5781 31.4844H72.625L71.3438 29.6875L70.0547 31.4844H69.1719L70.8516 28.8906H71.8906L73.5781 31.4844ZM71.5781 43.4531C71.3646 43.4531 71.1823 43.3776 71.0312 43.2266C70.8802 43.0755 70.8047 42.8932 70.8047 42.6797C70.8047 42.4661 70.8828 42.2865 71.0391 42.1406C71.1953 42 71.375 41.9297 71.5781 41.9297C71.7917 41.9297 71.974 42 72.125 42.1406C72.276 42.2865 72.3516 42.4661 72.3516 42.6797C72.3516 42.8932 72.276 43.0755 72.125 43.2266C71.974 43.3776 71.7917 43.4531 71.5781 43.4531ZM83.1875 41H81.9062V39.7344H81.875C81.3438 40.7031 80.5208 41.1875 79.4062 41.1875C77.5 41.1875 76.5469 40.0521 76.5469 37.7812V33H77.8203V37.5781C77.8203 39.2656 78.4661 40.1094 79.7578 40.1094C80.3828 40.1094 80.8958 39.8802 81.2969 39.4219C81.7031 38.9583 81.9062 38.3542 81.9062 37.6094V33H83.1875V41Z" fill="#E3E3E3"/>
+<rect x="19.364" width="9" height="9" transform="rotate(45 19.364 0)" fill="#1D1D1F"/>
+</g>
+<defs>
+<clipPath id="clip0_51_63">
+<rect width="101" height="62" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+;
+        var hasCancel = this.type.indexOf("error") < 0 && this.type.indexOf("nocancel") < 0 && this.type != "restarting";
+        var hasOk = this.type != "connecting" && this.type != "success" && this.type.indexOf("nook") < 0;
+        var hasLink = this.link != "";
+        var hasClose = this.type.indexOf("hasclose") >= 0;
+        var show_progress = this.type == "connecting";
+        var me = this;
+        self.timer(0, msgboxTimerFunc);
+        msgboxTimerFunc = function() {
+            if (typeof content == "string")
+                me.$(#content).html = translate(content);
+            else
+                me.$(#content).content(content);
+        };
+        self.timer(3ms, msgboxTimerFunc);
+        return (<div><div style="position: absolute; size:*;" />
+        <div style="size: *; position: absolute; ">
+                <div style={" width:121px; min-height:66px;margin-left: 0px; margin-top: 59px;"}>
+                    <div style="padding: 1em 1em; size: *;">
+                        <div style="height: *; flow: horizontal">
+                            <div style={this.contentStyle || "size: *; margin: * 0;"} #content />
+                            {<span  style="position: absolute;margin-left:-120px;margin-top: 15px;width:109px;height:34px;" #submit1></span>}
+                        </div>            
+                    </div>               
+                </div>           
+        </div>        
+        </div>);
+        }
+        else
+        {
         this.set_outline_focus();
         var color = this.getColor();
         var icon = this.getIcon(color);
@@ -163,6 +297,8 @@ class MsgboxComponent: Reactor.Component {
             </div>
             </div>
         </div></div>);
+        }
+        
     }
 
     event click $(.custom-event) (_, me) {
@@ -185,7 +321,23 @@ class MsgboxComponent: Reactor.Component {
         this.close();
         if (this.callback) this.callback(null);
     }
-    
+ 
+    event click $(span#submit1) {
+        handler.goto_about();
+       this.close();
+       if (this.callback) this.callback(null);
+    }
+
+    // event click $(span#submit2) {
+    //     handler.goto_notify();
+    //    this.close();
+    //    if (this.callback) this.callback(null);
+    // }
+
+    event click $(span#btclose) {
+        this.close();
+        if (this.callback) this.callback(null);
+    }
     event click $(button#skip) {
         var values = this.getValues();
         values.skip = true;
@@ -243,7 +395,7 @@ class MsgboxComponent: Reactor.Component {
             if (evt.keyCode == Event.VK_ESCAPE) {
                 this.cancel();
             }
-        }
+        } 
     }
 
     event click $(button#select_directory) {
@@ -253,7 +405,7 @@ class MsgboxComponent: Reactor.Component {
             $(#folderPath).text = folder;
         }
     }
-    
+
     function show_progress(show=1, err="") {
         if (show == -1) {
             this.close()

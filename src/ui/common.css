@@ -1,6 +1,6 @@
 html {
     var(accent): #0071ff;
-    var(button): #2C8CFF;
+    var(button): #F87738;
     var(gray-bg): #eee;
     var(bg): white;
     var(border): #ccc;
@@ -56,8 +56,8 @@ button[type=checkbox], button[type=checkbox]:active {
 
 button.outline {
     border: color(border) solid 1px;
-    background: transparent;
-    color: color(text);
+    background: color(button);
+    color: color(bg);
 }
 
 button.button:active, button.active {
@@ -94,7 +94,7 @@ input:empty {
 }
 
 input.outline-focus:focus {
-    outline: color(button) solid 3px;
+    outline: color(button) solid 2px;
 }
 
 textarea {
@@ -226,7 +226,7 @@ header caption {
     width: 12px;
   }
   button.window#maximize div {
-    border: black solid 1px;
+    border: black solid 0px;
   }
   button.window#close:hover {
     background: #F82600;
@@ -243,6 +243,10 @@ header caption {
     size: 12px;
     background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMAQMAAABsu86kAAAABlBMVEUAAAAAAAClZ7nPAAAAAXRSTlMAQObYZgAAAB1JREFUCNdjsP/AoCDA8P8CQ0MABipgaHBg+H8AAMfSC36WAZteAAAAAElFTkSuQmCC');
 }
+}
+
+div.transfer-history-box {
+  size: *;
 }
 
 div.chatbox {
@@ -397,21 +401,22 @@ menu li.line-through, menu li.line-through :hover {
 }
 
 div#msgbox .msgbox-icon svg {
-  size: 80px;
+  size: 40px;
   background: white;
 
 }
 
 div#msgbox .form {
-  border-spacing: 0.5em;
+  border-spacing: 19px;
 }
 
 div#msgbox .caption {
   @ELLIPSIS;
-  height: 2em;
+  height: 37px;
   line-height: 2em;
-  text-align: center;
+  padding-left: 16px;
   color: color(bg);
+  font-size: 16;
   font-weight: bold;
 }
 

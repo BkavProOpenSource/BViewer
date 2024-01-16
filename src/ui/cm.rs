@@ -63,7 +63,13 @@ impl InvokeUiCM for SciterHandler {
         );
     }
 
-    fn file_transfer_log(&self, _log: String) {}
+    fn file_transfer_log(&self, _log: String) {
+        self.call("cm_file_transfer_log", &make_args!(_log));
+    }
+
+    fn file_action_log(&self, _log: String) {
+        self.call("cm_file_action_log", &make_args!(_log));
+    }
 }
 
 impl SciterHandler {

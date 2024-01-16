@@ -555,11 +555,16 @@ impl Connection {
                 },
                 _ = conn.file_timer.tick() => {
                     if !conn.read_jobs.is_empty() {
-                        conn.send_to_cm(ipc::Data::FileTransferLog(fs::serialize_transfer_jobs(&conn.read_jobs)));
+                        // log send file (send block)
+                        //conn.send_to_cm(ipc::Data::FileTransferLog(fs::serialize_transfer_jobs(&conn.read_jobs)));
                         match fs::handle_read_jobs(&mut conn.read_jobs, &mut conn.stream).await {
                             Ok(log) => {
                                 if !log.is_empty() {
-                                    conn.send_to_cm(ipc::Data::FileTransferLog(log));
+                                    // Log gui file
+                                    let transfer_jobs_log: Vec<&str> = log.split("|||").collect();
+                                    for job_log in transfer_jobs_log {
+                                        conn.send_to_cm(ipc::Data::FileTransferLog(job_log.to_string()));
+                                    }
                                 }
                             }
                             Err(err) =>  {
@@ -671,7 +676,7 @@ impl Connection {
         video_service::notify_video_frame_fetched(id, None);
         scrap::codec::Encoder::update(id, scrap::codec::EncodingUpdate::Remove);
         if conn.authorized {
-            password::update_temporary_password();
+           // password::update_temporary_password();
         }
         if let Err(err) = conn.try_port_forward_loop(&mut rx_from_cm).await {
             conn.on_close(&err.to_string(), false).await;

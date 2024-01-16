@@ -3,7 +3,7 @@ stdout.println("current platform:", OS);
 stdout.println("is_xfce: ", is_xfce);
 
 // html min-width, min-height not working on mac, below works for all
-view.windowMinSize = (scaleIt(560), scaleIt(300));
+
 
 var app;
 var tmp = handler.get_connect_status();
@@ -19,34 +19,103 @@ var svg_menu = <svg #menu viewBox="0 0 512 512">
 	<circle cx="256" cy="448" r="64"/>
 	<circle cx="256" cy="64" r="64"/>
 </svg>;
-var svg_refresh_password = <svg #refresh-password xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 2v6h6M2.66 15.57a10 10 0 1 0 .57-8.38"/></svg>;
+var svg_refresh_password = <svg #refresh-password width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M0.750092 3V7.5H5.25009" stroke="#8E8E8E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M17.2499 15V10.5H12.7499" stroke="#8E8E8E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15.3676 6.75C14.9872 5.67508 14.3407 4.71405 13.4885 3.95656C12.6362 3.19907 11.606 2.66982 10.4939 2.41819C9.38176 2.16656 8.22403 2.20075 7.1287 2.51758C6.03337 2.8344 5.03615 3.42353 4.23009 4.23L0.750092 7.5M17.2501 10.5L13.7701 13.77C12.964 14.5765 11.9668 15.1656 10.8715 15.4824C9.77616 15.7992 8.61842 15.8334 7.50631 15.5818C6.39419 15.3302 5.36394 14.8009 4.51169 14.0434C3.65944 13.2859 3.01297 12.3249 2.63259 11.25" stroke="#8E8E8E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>;
 
+
+var svg_logo =<svg width="560" height="80" viewBox="0 0 560 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="560" height="80" fill="#F3F6F9"/>
+<path d="M65.541 42.2432H61.5234L61.502 39.9014H64.8213C65.4085 39.9014 65.8848 39.8298 66.25 39.6865C66.6224 39.5433 66.8945 39.3356 67.0664 39.0635C67.2383 38.7842 67.3242 38.4404 67.3242 38.0322C67.3242 37.5667 67.2383 37.1908 67.0664 36.9043C66.8945 36.6178 66.6224 36.4102 66.25 36.2812C65.8848 36.1452 65.4121 36.0771 64.832 36.0771H62.791V49H59.2891V33.3594H64.832C65.7702 33.3594 66.6081 33.4453 67.3457 33.6172C68.0833 33.7891 68.71 34.054 69.2256 34.4121C69.7484 34.7702 70.1458 35.2178 70.418 35.7549C70.6901 36.292 70.8262 36.9258 70.8262 37.6562C70.8262 38.2936 70.6829 38.888 70.3965 39.4395C70.1172 39.9909 69.666 40.4385 69.043 40.7822C68.4199 41.126 67.5856 41.3122 66.54 41.3408L65.541 42.2432ZM65.4014 49H60.6318L61.8994 46.293H65.4014C65.9385 46.293 66.3753 46.207 66.7119 46.0352C67.0485 45.8633 67.2956 45.6305 67.4531 45.3369C67.6107 45.0433 67.6895 44.7139 67.6895 44.3486C67.6895 43.9189 67.6143 43.5465 67.4639 43.2314C67.3206 42.9163 67.0915 42.6729 66.7764 42.501C66.4684 42.3291 66.0566 42.2432 65.541 42.2432H62.4043L62.4258 39.9014H66.2607L67.0771 40.8252C68.0726 40.8037 68.8675 40.9648 69.4619 41.3086C70.0635 41.6452 70.4967 42.0892 70.7617 42.6406C71.0267 43.1921 71.1592 43.7757 71.1592 44.3916C71.1592 45.4085 70.9408 46.2607 70.5039 46.9482C70.0671 47.6286 69.4189 48.1406 68.5596 48.4844C67.7074 48.8281 66.6546 49 65.4014 49ZM78.9473 45.5303L82.4277 33.3594H86.3271L80.9668 49H78.4209L78.9473 45.5303ZM75.7783 33.3594L79.248 45.5303L79.7959 49H77.2178L71.8896 33.3594H75.7783ZM90.9893 37.377V49H87.627V37.377H90.9893ZM87.4229 34.3691C87.4229 33.8822 87.5947 33.4847 87.9385 33.1768C88.2822 32.8617 88.7334 32.7041 89.292 32.7041C89.8506 32.7041 90.3018 32.8617 90.6455 33.1768C90.9964 33.4847 91.1719 33.8822 91.1719 34.3691C91.1719 34.849 90.9964 35.2464 90.6455 35.5615C90.3018 35.8695 89.8506 36.0234 89.292 36.0234C88.7334 36.0234 88.2822 35.8695 87.9385 35.5615C87.5947 35.2464 87.4229 34.849 87.4229 34.3691ZM98.8848 49.2148C97.9609 49.2148 97.1338 49.068 96.4033 48.7744C95.6729 48.4808 95.0534 48.0762 94.5449 47.5605C94.0436 47.0378 93.6605 46.4362 93.3955 45.7559C93.1305 45.0755 92.998 44.3486 92.998 43.5752V43.167C92.998 42.3005 93.1198 41.502 93.3633 40.7715C93.6068 40.041 93.9613 39.4072 94.4268 38.8701C94.8994 38.3258 95.4795 37.9069 96.167 37.6133C96.8545 37.3125 97.6387 37.1621 98.5195 37.1621C99.3431 37.1621 100.077 37.2982 100.722 37.5703C101.366 37.8353 101.91 38.2184 102.354 38.7197C102.799 39.2139 103.135 39.8118 103.364 40.5137C103.601 41.2083 103.719 41.9889 103.719 42.8555V44.2305H94.3516V42.0713H100.432V41.8135C100.432 41.4053 100.356 41.0472 100.206 40.7393C100.063 40.4313 99.848 40.195 99.5615 40.0303C99.2822 39.8584 98.9277 39.7725 98.498 39.7725C98.0898 39.7725 97.7497 39.8584 97.4775 40.0303C97.2054 40.2021 96.987 40.4456 96.8223 40.7607C96.6647 41.0687 96.5501 41.4303 96.4785 41.8457C96.4069 42.2539 96.3711 42.6943 96.3711 43.167V43.5752C96.3711 44.0264 96.432 44.4382 96.5537 44.8105C96.6755 45.1829 96.8545 45.5016 97.0908 45.7666C97.3271 46.0316 97.6136 46.2393 97.9502 46.3896C98.2868 46.54 98.6699 46.6152 99.0996 46.6152C99.6296 46.6152 100.134 46.515 100.614 46.3145C101.094 46.1068 101.509 45.7845 101.86 45.3477L103.429 47.1416C103.192 47.4854 102.859 47.8184 102.43 48.1406C102.007 48.4557 101.499 48.7135 100.904 48.9141C100.31 49.1146 99.6367 49.2148 98.8848 49.2148ZM108.778 45.7666L111.056 37.377H113.172L112.452 41.1152L110.175 49H108.445L108.778 45.7666ZM107.736 37.377L109.262 45.7344L109.423 49H107.36L104.503 37.377H107.736ZM115.234 45.5732L116.749 37.377H119.982L117.146 49H115.084L115.234 45.5732ZM113.43 37.377L115.729 45.7236L116.062 49H114.311L112.055 41.126L111.367 37.377H113.43ZM126.9 49.2148C125.977 49.2148 125.149 49.068 124.419 48.7744C123.688 48.4808 123.069 48.0762 122.561 47.5605C122.059 47.0378 121.676 46.4362 121.411 45.7559C121.146 45.0755 121.014 44.3486 121.014 43.5752V43.167C121.014 42.3005 121.135 41.502 121.379 40.7715C121.622 40.041 121.977 39.4072 122.442 38.8701C122.915 38.3258 123.495 37.9069 124.183 37.6133C124.87 37.3125 125.654 37.1621 126.535 37.1621C127.359 37.1621 128.093 37.2982 128.737 37.5703C129.382 37.8353 129.926 38.2184 130.37 38.7197C130.814 39.2139 131.151 39.8118 131.38 40.5137C131.616 41.2083 131.734 41.9889 131.734 42.8555V44.2305H122.367V42.0713H128.447V41.8135C128.447 41.4053 128.372 41.0472 128.222 40.7393C128.078 40.4313 127.864 40.195 127.577 40.0303C127.298 39.8584 126.943 39.7725 126.514 39.7725C126.105 39.7725 125.765 39.8584 125.493 40.0303C125.221 40.2021 125.003 40.4456 124.838 40.7607C124.68 41.0687 124.566 41.4303 124.494 41.8457C124.423 42.2539 124.387 42.6943 124.387 43.167V43.5752C124.387 44.0264 124.448 44.4382 124.569 44.8105C124.691 45.1829 124.87 45.5016 125.106 45.7666C125.343 46.0316 125.629 46.2393 125.966 46.3896C126.302 46.54 126.686 46.6152 127.115 46.6152C127.645 46.6152 128.15 46.515 128.63 46.3145C129.11 46.1068 129.525 45.7845 129.876 45.3477L131.444 47.1416C131.208 47.4854 130.875 47.8184 130.445 48.1406C130.023 48.4557 129.514 48.7135 128.92 48.9141C128.326 49.1146 127.652 49.2148 126.9 49.2148ZM136.729 40.084V49H133.378V37.377H136.525L136.729 40.084ZM140.199 37.291L140.146 40.417C140.002 40.3955 139.816 40.3776 139.587 40.3633C139.358 40.3418 139.161 40.3311 138.996 40.3311C138.566 40.3311 138.194 40.3848 137.879 40.4922C137.571 40.5924 137.313 40.7428 137.105 40.9434C136.905 41.1439 136.755 41.3945 136.654 41.6953C136.554 41.9889 136.504 42.3291 136.504 42.7158L135.87 42.4043C135.87 41.638 135.945 40.9362 136.096 40.2988C136.246 39.6615 136.465 39.11 136.751 38.6445C137.037 38.1719 137.388 37.8066 137.804 37.5488C138.219 37.291 138.692 37.1621 139.222 37.1621C139.394 37.1621 139.569 37.1729 139.748 37.1943C139.927 37.2158 140.077 37.248 140.199 37.291Z" fill="#FF7000"/>
+<g clip-path="url(#clip0_95_27)">
+<path d="M560 0H419L457.135 40H560V0Z" fill="url(#paint0_linear_95_27)"/>
+<path d="M359 80L500 80L461.865 40L359 40L359 80Z" fill="url(#paint1_linear_95_27)"/>
+<path d="M413 -4L450 33" stroke="url(#paint2_linear_95_27)" stroke-width="12"/>
+<path d="M451 10V34H427" stroke="url(#paint3_linear_95_27)" stroke-width="12"/>
+<path d="M501 84L464 47" stroke="url(#paint4_linear_95_27)" stroke-width="12"/>
+<path d="M463 70V46H487" stroke="url(#paint5_linear_95_27)" stroke-width="12"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_95_27" x1="427" y1="-9.82335e-06" x2="493.5" y2="28" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FFD28F"/>
+<stop offset="1" stop-color="#F3F6F9" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="paint1_linear_95_27" x1="492" y1="80" x2="425.5" y2="52" gradientUnits="userSpaceOnUse">
+<stop stop-color="#9AD7FB"/>
+<stop offset="1" stop-color="#F3F6F9" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="paint2_linear_95_27" x1="413.5" y1="-3.5" x2="447" y2="30.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FF9000"/>
+<stop offset="1" stop-color="#FF6B00"/>
+</linearGradient>
+<linearGradient id="paint3_linear_95_27" x1="433.5" y1="16" x2="455" y2="38" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FF6C00"/>
+<stop offset="1" stop-color="#FF9100"/>
+</linearGradient>
+<linearGradient id="paint4_linear_95_27" x1="500.5" y1="83.5" x2="467" y2="49.5" gradientUnits="userSpaceOnUse">
+<stop stop-color="#3BB5FE"/>
+<stop offset="1" stop-color="#0F83F2"/>
+</linearGradient>
+<linearGradient id="paint5_linear_95_27" x1="480.5" y1="64" x2="459" y2="42" gradientUnits="userSpaceOnUse">
+<stop stop-color="#0E81F2"/>
+<stop offset="1" stop-color="#3DB8FE"/>
+</linearGradient>
+<clipPath id="clip0_95_27">
+<rect width="201" height="80" fill="white" transform="translate(359)"/>
+</clipPath>
+</defs>
+</svg>;
+
+var svg_status_connect = <svg width="528" height="48" viewBox="0 0 528 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="528" height="48" rx="8" fill="#F3F6F9"/>
+</svg>;
+var svg_button_close = <svg #btclose width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1 1L13 13" stroke="#D5D5D5" stroke-width="1.5"/>
+<path d="M1 13L13 1" stroke="#D5D5D5" stroke-width="1.5"/>
+</svg>;
+
+var svg_info = <svg #infomation width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 12H20" stroke="#1D1D1F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4 7H20" stroke="#1D1D1F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4 17H20" stroke="#1D1D1F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>;
+
+var svg_setPass = <svg #editPass viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><defs></defs><title/><g data-name="Layer 2" id="Layer_2"><g data-name="Layer 1" id="Layer_1-2"><rect class="cls-1" height="4.86" transform="translate(-3.77 7.81) rotate(-45)" width="11.44" x="1.83" y="6.02"/><path class="cls-2" d="M15.73,2.4,13.6.27a.93.93,0,0,0-1.31,0L11.11,1.45l3.44,3.43,1.18-1.18A.93.93,0,0,0,15.73,2.4Z"/><path class="cls-2" d="M0,15.28A.61.61,0,0,0,.72,16L4,15.45.55,12Z"/></g></g></svg>;
+
+
+var lang = "vn";
 var my_id = handler.get_id();
 function get_id() {
+  handler.set_local_option("lang", lang);
+  app.update();
   my_id = handler.get_id();
   return my_id;
 }
 
 class ConnectStatus: Reactor.Component {
+
     function render() {
-        return
-            <div .connect-status>
-                <span class={"connect-status-icon connect-status" + (service_stopped ? 0 : connect_status)} />
-                {this.getConnectStatusStr()}
-                {service_stopped ? <span .link #start-service>{translate('Start Service')}</span> : ""}
-            </div>;
+        return               
+                <div .connect-status style="position: absolute; left: 183px;top: 298px;font-size:14px;display: flex;">
+                    <span class={"connect-status-icon connect-status" + (service_stopped ? 0 : connect_status)} ></span>
+                        {this.getConnectStatusStr()}   
+                        {service_stopped ? <span .link #start-service>{translate('Start Service')}</span> : ""}                    
+                    
+               </div>;
     }
 
     function getConnectStatusStr() {
         if (service_stopped) {
-            return translate("Service is not running");
+            return <span style="color: red;">{translate("Service is not running")}</span>;
         } else if (connect_status == -1) {
-            return translate('not_ready_status');
+            return <span style="color: red;">{translate('not_ready_status')}</span>;
         } else if (connect_status == 0) {
             return translate('connecting_status');
         }
-        if (!handler.using_public_server()) return translate('Ready');
-        return <span>{translate("Ready")}, <span .link #setup-server>{translate("setup_server_tip")}</span></span>;
+        if (!handler.using_public_server()) return <span style="color: blue;">{translate('Connect OK')}</span>;
+        return <span style="color: blue;">{translate('Connect OK')}</span>;
     }
 
     event click $(#start-service) () {
@@ -54,7 +123,7 @@ class ConnectStatus: Reactor.Component {
     }
 
     event click $(#setup-server) () {
-        handler.open_url("https://rustdesk.com/blog/id-relay-set/");
+        handler.open_url("https://www.bkav.com.vn/");
     }
 }
 
@@ -292,8 +361,6 @@ class MyIdMenu: Reactor.Component {
 
     function render() {
         return <div #myid>
-            {this.renderPop()}
-            ID{svg_menu}
         </div>;
     }
 
@@ -366,23 +433,31 @@ class MyIdMenu: Reactor.Component {
             }
         }
     }
-
+//            <div> translate("Version")  + handler.get_version()  "\
+    // function showAbout() {
+	// var name = handler.get_app_name();
+    //     msgbox("custom-nocancel-nook-hasclose", translate("About"), 
+    //         "<div> \
+    //         <div style='margin-left: 15px;'>" + translate("Bviewer slogan") + "</div>\
+    //         <div>"+ translate("Version")  + handler.get_version()  + "</div>\
+    //        <div url='https://bkav.com.vn/home'>"+  translate("Introduct") +"<u>https://bkav.com.vn/home</u></div> \
+    //         <div url='https://github.com/BkavProOpenSource/BViewer'> "+ translate("Source code")+"<u>https://github.com/BkavProOpenSource/BViewer</u></div> \
+	//         <div style=' padding: 1em; margin-top: 1em;'>" + translate("Email") + "</div>\
+    //         <div style='height: 198px;font-size: 12px; top:0px;'>" + translate("Slogan_tip") + "</div>\
+    //         </div>", "", function(el) {
+    //         if (el && el.attributes) { 
+    //             handler.open_url(el.attributes['url']);
+    //         };
+    //     }, 500);
+    // }
     function showAbout() {
-        var name = handler.get_app_name();
-        msgbox("custom-nocancel-nook-hasclose", translate("About") + " " + name, "<div style='line-height: 2em'> \
-            <div>Version: " + handler.get_version() + " \
-            <div>Fingerprint: " + handler.get_fingerprint() + " \
-            <div .link .custom-event url='https://rustdesk.com/privacy.html'>" + translate("Privacy Statement") + "</div> \
-            <div .link .custom-event url='https://rustdesk.com'>" + translate("Website") + "</div> \
-	    <div style='background: #2c8cff; color: white; padding: 1em; margin-top: 1em;'>Copyright &copy; 2023 Purslane Ltd.\
-            <br />" + handler.get_license() + " \
-            <p style='font-weight: bold'>" + translate("Slogan_tip") + "</p>\
-            </div>\
-        </div>", "", function(el) {
-            if (el && el.attributes) {
+	var name = handler.get_app_name();
+        msgbox("custom-nocancel-nook", translate(""), 
+            "", "", function(el) {
+            if (el && el.attributes) { 
                 handler.open_url(el.attributes['url']);
             };
-        }, 400);
+        }, 500);
     }
 
     event click $(menu#config-options>li) (_, me) {
@@ -542,8 +617,11 @@ function editDirectAccessPort() {
       });
 }
 
+
+
 class App: Reactor.Component
 {
+   
     function this() {
         app = this;
     }
@@ -552,50 +630,35 @@ class App: Reactor.Component
         var is_can_screen_recording = handler.is_can_screen_recording(false);
         return
             <div .app>
-                    <div .left-pane>
-                    <div>
-                        <div .title>{translate('Your Desktop')}</div>
-                        <div .lighter-text>{translate('desk_tip')}</div>
-                        <div .your-desktop>
+                    <div .left-pane>                  
+                        <span style="position: absolute; left: 16px;top: 296px;">
+                            {svg_status_connect}
+                        </span>
+                        <div style="position: absolute; left: 22px;top:28px;">{svg_info}</div>
+                        <span style="position: absolute; left: 534px; top: 10px;">{svg_button_close}</span>                    
+                        <div style="position: absolute; left: 54px;top: 132px;font-size:16px;color:#000000;">{translate("Your ID")}</div>
+                        <div style="position: absolute; left: 166px;top: 126px;font-size:12px;width: 340px; height: 36px;">
                             <MyIdMenu />
-                            {key_confirmed ? <input type="text" readonly value={formatId(get_id())}/> : translate("Generating ...")}
+                            {connect_status == 1 ? <input type="text" readonly value={formatId(get_id())}/> : <input type="text" readonly value={""}/>}
                         </div>
-                        <PasswordArea />
-                    </div>
-                    {!is_win || handler.is_installed() ? "": <InstallMe />}
-                    {software_update_url ? <UpdateMe /> : ""}
-                    {is_win && handler.is_installed() && !software_update_url && handler.is_installed_lower_version() ? <UpgradeMe /> : ""}
-                    {is_can_screen_recording ? "": <CanScreenRecording />}
-                    {is_can_screen_recording && !handler.is_process_trusted(false) ? <TrustMe /> : ""}
-                    {!service_stopped && is_can_screen_recording && handler.is_process_trusted(false) && handler.is_installed() && !handler.is_installed_daemon(false) ? <InstallDaemon /> : ""}
-                    {system_error ? <SystemError /> : ""}
-                    {!system_error && handler.is_login_wayland() && !handler.current_is_wayland() ? <FixWayland /> : ""}
-                    {!system_error && handler.current_is_wayland() ? <ModifyDefaultLogin /> : ""}
-                </div>
-                <div .right-pane>
-                    <div .right-content>
-                        <div .card-connect>
-                            <div .title>{translate('Control Remote Desktop')}</div>
-                            <ID @{this.remote_id} />
-                            <div .right-buttons>
-                                <button .button .outline #file-transfer>{translate('Transfer File')}</button>
-                                <button .button #connect>{translate('Connect')}</button>
-                            </div>
-                        </div>
-                        <MultipleSessions @{this.multipleSessions} />
-                    </div>
-                    <ConnectStatus @{this.connect_status} />
-                </div>
-                <div #overlay style="position: absolute;size:*;background:black;opacity:0.5;display:none" />
-            </div>;
+                        <PasswordArea/>
+                        <ConnectStatus @{this.connect_status} />
+                </div>               
+                   </div>;
     }
 
     event click $(button#connect) {
         this.newRemote("connect");
-    }
+    } 
 
+    event click $(svg#infomation) (_, me) {
+        showAbout()
+    }
     event click $(button#file-transfer) {
         this.newRemote("file-transfer");
+    }
+    event click $(svg#btclose) {
+        view.close();
     }
 
     function newRemote(type) {
@@ -603,12 +666,10 @@ class App: Reactor.Component
     }
 }
 
+
 class InstallMe: Reactor.Component {
     function render() {
-        return <div .install-me>
-            <span />
-            <div>{translate('install_tip')}</div>
-            <div><button #install-me .button>{translate('Install')}</button></div>
+        return <div >
         </div>;
     }
 
@@ -822,9 +883,9 @@ class PasswordEyeArea : Reactor.Component {
         var mode= handler.get_option('approve-mode');
         var value = mode == 'click' ||  method == 'use-permanent-password' ? "-" : password_cache[0];
         return
-            <div .eye-area style="width: *">
-                <input|text @{this.input} readonly value={value} />
-                {svg_refresh_password}
+            <div .eye-area style="position: absolute; left: 166px; top: 178px;">
+                <input|text @{this.input} readonly value={value} style="width: 338px; height: 27px; font-size: 17px;"/>
+                <span style="margin-left: 300px; display: inline-block;" .refresh-icon>{svg_refresh_password}</span>
             </div>;
     }
 
@@ -833,6 +894,78 @@ class PasswordEyeArea : Reactor.Component {
         this.update();
     }
 }
+
+
+class PasswordPrivateArea : Reactor.Component {
+    render() {
+        //var method = handler.get_option('verification-method');
+        //var mode= handler.get_option('approve-mode');
+        //var value = mode == 'click' ||  method == 'use-permanent-password' ? "-" : password_cache[0];
+        return
+        //   <div .eye-area style="position: absolute; left: 155px;top: 162px;font-size:12px; width: 224px; height: 34px;color:#000000;">
+        //         <input|text @{this.input} readonly value={value} />
+        //         <span style="margin-left: 190px; padding: 0 6px; display: inline-block; top: 4px;" .refresh-icon>{svg_refresh_password}</span>
+        //     </div>;
+            <div .eye-area style="position: absolute; left: 110px;top: -10px;width: 146px; height: 34px;">
+            <input|password(password) readonly value={value}/>            
+            <span style="margin-left: 115px; padding: 0 6px; display: inline-block; top: 10px;" .refresh-icon >{svg_setPass}</span>
+            </div>;
+    }
+    event click $(svg#editPass) (_, me){
+        var me = this;
+        var password = handler.permanent_password();
+        var value_field = password.length == 0 ? "" : "value=" + password;
+        msgbox("custom-password", "BViewer", "<div .form .set-password> \
+            <div><span>" + translate('Password')+ ":</span><input|password(password) .outline-focus " + value_field + " /></div> \
+            <div><span>" + translate('Confirmation') + ":</span><input|password(confirmation) " + value_field + " /></div> \
+        </div> \
+        ", "", function(res=null) {
+            if (!res) return;
+            var p0 = (res.password || "").trim();
+            var p1 = (res.confirmation || "").trim();
+            if (p0.length < 6 && p0.length != 0) {
+                return translate("Too short, at least 6 characters.");
+            }
+            if (p0 != p1) {
+                return translate("The confirmation is not identical.");
+            }
+            handler.set_permanent_password(p0);
+            me.update();
+        });
+    }
+}
+
+class WindowsRunning : Reactor.Component {
+   
+   var run1;
+    render() {
+        var run = handler.handle_relay_id("checkRunning") == '1' ? { checked: true } : {};
+        return
+            <div style="position: absolute; top : -6px; left: -25px;">
+                <button|checkbox #running {run}/>
+            </div>;
+    }
+    event click $(#running)
+    {
+        if($(#running).value)
+        {
+            //stdout.println("bat len");
+            var args = "runningWin";
+            var install_path = "1";
+            view.install_me(args, install_path);
+        }
+        else
+        {
+            //stdout.println("tat di");
+            var args = "runningWin";
+            var install_path = "0";
+            view.install_me(args, install_path)
+        }
+        
+    }
+   // stdout.println("da xong {}", run1);
+}
+
 
 var temporaryPasswordLengthMenu;
 class TemporaryPasswordLengthMenu: Reactor.Component {
@@ -875,6 +1008,9 @@ class TemporaryPasswordLengthMenu: Reactor.Component {
     }
 }
 
+// <div style="position: absolute; left: 45px;top: 240px;font-size:14px; width: 202px; height: 21px;color:#000000;">{translate('Password Private')}
+//     <PasswordPrivateArea/>
+// </div>
 var passwordArea;
 class PasswordArea: Reactor.Component {
     function this() {
@@ -885,12 +1021,13 @@ class PasswordArea: Reactor.Component {
         var me = this;
         self.timer(1ms, function() { me.toggleMenuState() });
         return 
-        <div .your-desktop>
-            <div>{translate('One-time Password')}</div>
-            <div .password style="flow:horizontal">
-                {this.renderPop()}
-                <PasswordEyeArea />
-                {svg_edit}
+        <div >
+            <div style="position: absolute; left: 54px;top: 185px; font-size:16px; color:#000000;">{translate('Password')}</div>
+            <div >              
+                <PasswordEyeArea/>                
+            </div>
+            <div style="position: absolute;left: 191px;top: 232px;font-size:14px; width: 300px; height: 18px;color:#000000;">{translate('Running Windows')}
+                <WindowsRunning/>
             </div>
         </div>;
     }
@@ -946,7 +1083,7 @@ class PasswordArea: Reactor.Component {
         var password = handler.permanent_password();
         var value_field = password.length == 0 ? "" : "value=" + password;
         msgbox("custom-password", translate("Set Password"), "<div .form .set-password> \
-            <div><span>" + translate('Password') + ":</span><input|password(password) .outline-focus " + value_field + " /></div> \
+            <div><span>" + "Mật khẩu" + ":</span><input|password(password) .outline-focus " + value_field + " /></div> \
             <div><span>" + translate('Confirmation') + ":</span><input|password(confirmation) " + value_field + " /></div> \
         </div> \
         ", "", function(res=null) {
@@ -1080,17 +1217,8 @@ function self.closing() {
 }
 
 function self.ready() {
-    var r = handler.get_size();
-    if (isReasonableSize(r) && r[2] > 0) {
-        var (sx, sy, sw, sh) = view.screenBox(#workarea, #rectw);
-        if (r[2] >= sw && r[3] >= sh) {
-            self.timer(1ms, function() { view.windowState = View.WINDOW_MAXIMIZED; });
-        } else {
-            view.move(r[0], r[1], r[2], r[3]);
-        }
-    } else {
-        centerize(scaleIt(800), scaleIt(600));
-    }
+
+    centerize(scaleIt(560), scaleIt(360));
     if (!handler.get_remote_id()) {
         view.focus = $(#remote_id);
     }
@@ -1125,6 +1253,7 @@ function checkConnectStatus() {
             connect_status = tmp[0];
             app.connect_status.update();
             myIdMenu.update();
+            app.update();
         }
         if (tmp[1] != key_confirmed) {
             key_confirmed = tmp[1];
@@ -1157,12 +1286,12 @@ function checkConnectStatus() {
 var enter = false;               
 function self.onMouse(evt) {     
     switch(evt.type) {           
-    case Event.MOUSE_ENTER:    
+    case Event.MOUSE_ENTER:
         enter = true;
         check_if_overlay();
         break;
     case Event.MOUSE_LEAVE:
-        $(#overlay).style#display = 'none';
+        //$(#overlay).style#display = 'none';
         enter = false;
         break;
     }

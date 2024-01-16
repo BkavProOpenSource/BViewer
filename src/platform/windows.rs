@@ -14,6 +14,7 @@ use hbb_common::{
     message_proto::Resolution,
     sleep, timeout, tokio,
 };
+use std::env;
 use std::process::{Command, Stdio};
 use std::{
     collections::HashMap,
@@ -964,169 +965,233 @@ fn get_after_install(exe: &str) -> String {
 }
 
 pub fn install_me(options: &str, path: String, silent: bool, debug: bool) -> ResultType<()> {
-    let uninstall_str = get_uninstall(false);
-    let mut path = path.trim_end_matches('\\').to_owned();
-    let (subkey, _path, start_menu, exe) = get_default_install_info();
-    let mut exe = exe;
-    if path.is_empty() {
-        path = _path;
-    } else {
-        exe = exe.replace(&_path, &path);
-    }
-    let mut version_major = "0";
-    let mut version_minor = "0";
-    let mut version_build = "0";
-    let versions: Vec<&str> = crate::VERSION.split(".").collect();
-    if versions.len() > 0 {
-        version_major = versions[0];
-    }
-    if versions.len() > 1 {
-        version_minor = versions[1];
-    }
-    if versions.len() > 2 {
-        version_build = versions[2];
-    }
-    let app_name = crate::get_app_name();
+    if options.contains("runningWin"){
+        if path.contains("1"){
+            // if let Ok(current_dir) = env::current_dir() {
+            //     //println!("Current directory: {}", current_dir.display());
+            //     let path = current_dir.display();
+            // } else {
+            //     println!("Failed to get current directory.");
+            // }
+        
+            // println!("Current directory: {}", path);
+            let exe_path = env::current_exe();
+            let exe_path = exe_path.unwrap();
 
-    let tmp_path = std::env::temp_dir().to_string_lossy().to_string();
-    let mk_shortcut = write_cmds(
-        format!(
-            "
-Set oWS = WScript.CreateObject(\"WScript.Shell\")
-sLinkFile = \"{tmp_path}\\{app_name}.lnk\"
+            //println!("Executable : {}", exe_path.display());
+            //println!("khởi động cùng Windows.");
+            let output = Command::new("reg")
+            .arg("add")
+            .arg("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run")
+            .arg("/v")
+            .arg("BViewer")
+            .arg("/t")
+            .arg("REG_SZ")
+            .arg("/d")
+            .arg(exe_path)
+            .output()?;
+           
+        }
+        else
+        {
+            let hklm = RegKey::predef(HKEY_CURRENT_USER);
 
-Set oLink = oWS.CreateShortcut(sLinkFile)
-    oLink.TargetPath = \"{exe}\"
-oLink.Save
-        "
-        ),
-        "vbs",
-        "mk_shortcut",
-    )?
-    .to_str()
-    .unwrap_or("")
-    .to_owned();
-    // https://superuser.com/questions/392061/how-to-make-a-shortcut-from-cmd
-    let uninstall_shortcut = write_cmds(
-        format!(
-            "
-Set oWS = WScript.CreateObject(\"WScript.Shell\")
-sLinkFile = \"{tmp_path}\\Uninstall {app_name}.lnk\"
-Set oLink = oWS.CreateShortcut(sLinkFile)
-    oLink.TargetPath = \"{exe}\"
-    oLink.Arguments = \"--uninstall\"
-    oLink.IconLocation = \"msiexec.exe\"
-oLink.Save
-        "
-        ),
-        "vbs",
-        "uninstall_shortcut",
-    )?
-    .to_str()
-    .unwrap_or("")
-    .to_owned();
-    let tray_shortcut = get_tray_shortcut(&exe, &tmp_path)?;
-    let mut shortcuts = Default::default();
-    if options.contains("desktopicon") {
-        shortcuts = format!(
-            "copy /Y \"{}\\{}.lnk\" \"%PUBLIC%\\Desktop\\\"",
-            tmp_path,
-            crate::get_app_name()
-        );
+            // Đường dẫn của khóa registry chứa danh sách khởi động cùng Windows
+            let key_path = r"Software\Microsoft\Windows\CurrentVersion\Run";
+        
+            // Tên của mục khởi động cần xóa
+            let program_name_to_remove = "BViewer";
+        
+            // Mở khóa registry chứa danh sách khởi động cùng Windows
+            match hklm.open_subkey_with_flags(key_path, KEY_SET_VALUE) {
+                Ok(key) => {
+                    // Xóa mục khởi động cần xóa
+                    match key.delete_value(program_name_to_remove) {
+                        Ok(_) => {
+                            println!("Đã xóa mục khởi động thành công.");
+                           
+                        }
+                        Err(_) => {
+                            println!("Không thể xóa mục khởi động.");
+                           
+                        }
+                    }
+                }
+                Err(_) => {
+                    println!("Không thể mở khóa registry.");
+                   
+                }
+            }
+        }
+
     }
-    if options.contains("startmenu") {
-        shortcuts = format!(
-            "{shortcuts}
-md \"{start_menu}\"
-copy /Y \"{tmp_path}\\{app_name}.lnk\" \"{start_menu}\\\"
-copy /Y \"{tmp_path}\\Uninstall {app_name}.lnk\" \"{start_menu}\\\"
-     "
-        );
-    }
-
-    let meta = std::fs::symlink_metadata(std::env::current_exe()?)?;
-    let size = meta.len() / 1024;
-    // https://docs.microsoft.com/zh-cn/windows/win32/msi/uninstall-registry-key?redirectedfrom=MSDNa
-    // https://www.windowscentral.com/how-edit-registry-using-command-prompt-windows-10
-    // https://www.tenforums.com/tutorials/70903-add-remove-allowed-apps-through-windows-firewall-windows-10-a.html
-    // Note: without if exist, the bat may exit in advance on some Windows7 https://github.com/rustdesk/rustdesk/issues/895
-    let dels = format!(
-        "
-if exist \"{mk_shortcut}\" del /f /q \"{mk_shortcut}\"
-if exist \"{uninstall_shortcut}\" del /f /q \"{uninstall_shortcut}\"
-if exist \"{tray_shortcut}\" del /f /q \"{tray_shortcut}\"
-if exist \"{tmp_path}\\{app_name}.lnk\" del /f /q \"{tmp_path}\\{app_name}.lnk\"
-if exist \"{tmp_path}\\Uninstall {app_name}.lnk\" del /f /q \"{tmp_path}\\Uninstall {app_name}.lnk\"
-if exist \"{tmp_path}\\{app_name} Tray.lnk\" del /f /q \"{tmp_path}\\{app_name} Tray.lnk\"
-        "
-    );
-    let src_exe = std::env::current_exe()?.to_str().unwrap_or("").to_string();
-
-    let install_cert = if options.contains("driverCert") {
-        format!("\"{}\" --install-cert \"RustDeskIddDriver.cer\"", src_exe)
-    } else {
-        "".to_owned()
-    };
-
-    // potential bug here: if run_cmd cancelled, but config file is changed.
-    if let Some(lic) = get_license() {
-        Config::set_option("key".into(), lic.key);
-        Config::set_option("custom-rendezvous-server".into(), lic.host);
-        Config::set_option("api-server".into(), lic.api);
-    }
-
-    let cmds = format!(
-        "
-{uninstall_str}
-chcp 65001
-md \"{path}\"
-{copy_exe}
-reg add {subkey} /f
-reg add {subkey} /f /v DisplayIcon /t REG_SZ /d \"{exe}\"
-reg add {subkey} /f /v DisplayName /t REG_SZ /d \"{app_name}\"
-reg add {subkey} /f /v DisplayVersion /t REG_SZ /d \"{version}\"
-reg add {subkey} /f /v Version /t REG_SZ /d \"{version}\"
-reg add {subkey} /f /v BuildDate /t REG_SZ /d \"{build_date}\"
-reg add {subkey} /f /v InstallLocation /t REG_SZ /d \"{path}\"
-reg add {subkey} /f /v Publisher /t REG_SZ /d \"{app_name}\"
-reg add {subkey} /f /v VersionMajor /t REG_DWORD /d {version_major}
-reg add {subkey} /f /v VersionMinor /t REG_DWORD /d {version_minor}
-reg add {subkey} /f /v VersionBuild /t REG_DWORD /d {version_build}
-reg add {subkey} /f /v UninstallString /t REG_SZ /d \"\\\"{exe}\\\" --uninstall\"
-reg add {subkey} /f /v EstimatedSize /t REG_DWORD /d {size}
-reg add {subkey} /f /v WindowsInstaller /t REG_DWORD /d 0
-cscript \"{mk_shortcut}\"
-cscript \"{uninstall_shortcut}\"
-cscript \"{tray_shortcut}\"
-copy /Y \"{tmp_path}\\{app_name} Tray.lnk\" \"%PROGRAMDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\\"
-{shortcuts}
-copy /Y \"{tmp_path}\\Uninstall {app_name}.lnk\" \"{path}\\\"
-{dels}
-{import_config}
-{install_cert}
-{after_install}
-{sleep}
-    ",
-        version=crate::VERSION,
-        build_date=crate::BUILD_DATE,
-        after_install=get_after_install(&exe),
-        sleep=if debug {
-            "timeout 300"
-        } else {
-            ""
-        },
-        dels=if debug {
-            ""
-        } else {
-            &dels
-        },
-        copy_exe = copy_exe_cmd(&src_exe, &exe, &path)?,
-        import_config = get_import_config(&exe),
-    );
-    run_cmds(cmds, debug, "install")?;
-    run_after_run_cmds(silent);
     Ok(())
 }
+// else{
+//     let uninstall_str = get_uninstall(false);
+//     let mut path = path.trim_end_matches('\\').to_owned();
+//     let (subkey, _path, start_menu, exe) = get_default_install_info();
+//     let mut exe = exe;
+//     if path.is_empty() {
+//         path = _path;
+//     } else {
+//         exe = exe.replace(&_path, &path);
+//     }
+//     let mut version_major = "0";
+//     let mut version_minor = "0";
+//     let mut version_build = "0";
+//     let versions: Vec<&str> = crate::VERSION.split(".").collect();
+//     if versions.len() > 0 {
+//         version_major = versions[0];
+//     }
+//     if versions.len() > 1 {
+//         version_minor = versions[1];
+//     }
+//     if versions.len() > 2 {
+//         version_build = versions[2];
+//     }
+//     let app_name = crate::get_app_name();
+
+//     let tmp_path = std::env::temp_dir().to_string_lossy().to_string();
+//     let mk_shortcut = write_cmds(
+//         format!(
+//             "
+// Set oWS = WScript.CreateObject(\"WScript.Shell\")
+// sLinkFile = \"{tmp_path}\\{app_name}.lnk\"
+
+// Set oLink = oWS.CreateShortcut(sLinkFile)
+//     oLink.TargetPath = \"{exe}\"
+// oLink.Save
+//         "
+//         ),
+//         "vbs",
+//         "mk_shortcut",
+//     )?
+//     .to_str()
+//     .unwrap_or("")
+//     .to_owned();
+//     // https://superuser.com/questions/392061/how-to-make-a-shortcut-from-cmd
+//     let uninstall_shortcut = write_cmds(
+//         format!(
+//             "
+// Set oWS = WScript.CreateObject(\"WScript.Shell\")
+// sLinkFile = \"{tmp_path}\\Uninstall {app_name}.lnk\"
+// Set oLink = oWS.CreateShortcut(sLinkFile)
+//     oLink.TargetPath = \"{exe}\"
+//     oLink.Arguments = \"--uninstall\"
+//     oLink.IconLocation = \"msiexec.exe\"
+// oLink.Save
+//         "
+//         ),
+//         "vbs",
+//         "uninstall_shortcut",
+//     )?
+//     .to_str()
+//     .unwrap_or("")
+//     .to_owned();
+//     let tray_shortcut = get_tray_shortcut(&exe, &tmp_path)?;
+//     let mut shortcuts = Default::default();
+//     if options.contains("desktopicon") {
+//         shortcuts = format!(
+//             "copy /Y \"{}\\{}.lnk\" \"%PUBLIC%\\Desktop\\\"",
+//             tmp_path,
+//             crate::get_app_name()
+//         );
+//     }
+//     if options.contains("startmenu") {
+//         shortcuts = format!(
+//             "{shortcuts}
+// md \"{start_menu}\"
+// copy /Y \"{tmp_path}\\{app_name}.lnk\" \"{start_menu}\\\"
+// copy /Y \"{tmp_path}\\Uninstall {app_name}.lnk\" \"{start_menu}\\\"
+//      "
+//         );
+//     }
+
+//     let meta = std::fs::symlink_metadata(std::env::current_exe()?)?;
+//     let size = meta.len() / 1024;
+//     // https://docs.microsoft.com/zh-cn/windows/win32/msi/uninstall-registry-key?redirectedfrom=MSDNa
+//     // https://www.windowscentral.com/how-edit-registry-using-command-prompt-windows-10
+//     // https://www.tenforums.com/tutorials/70903-add-remove-allowed-apps-through-windows-firewall-windows-10-a.html
+//     // Note: without if exist, the bat may exit in advance on some Windows7 https://github.com/rustdesk/rustdesk/issues/895
+//     let dels = format!(
+//         "
+// if exist \"{mk_shortcut}\" del /f /q \"{mk_shortcut}\"
+// if exist \"{uninstall_shortcut}\" del /f /q \"{uninstall_shortcut}\"
+// if exist \"{tray_shortcut}\" del /f /q \"{tray_shortcut}\"
+// if exist \"{tmp_path}\\{app_name}.lnk\" del /f /q \"{tmp_path}\\{app_name}.lnk\"
+// if exist \"{tmp_path}\\Uninstall {app_name}.lnk\" del /f /q \"{tmp_path}\\Uninstall {app_name}.lnk\"
+// if exist \"{tmp_path}\\{app_name} Tray.lnk\" del /f /q \"{tmp_path}\\{app_name} Tray.lnk\"
+//         "
+//     );
+//     let src_exe = std::env::current_exe()?.to_str().unwrap_or("").to_string();
+
+//     let install_cert = if options.contains("driverCert") {
+//         format!("\"{}\" --install-cert \"RustDeskIddDriver.cer\"", src_exe)
+//     } else {
+//         "".to_owned()
+//     };
+
+//     // potential bug here: if run_cmd cancelled, but config file is changed.
+//     if let Some(lic) = get_license() {
+//         Config::set_option("key".into(), lic.key);
+//         Config::set_option("custom-rendezvous-server".into(), lic.host);
+//         Config::set_option("api-server".into(), lic.api);
+//     }
+
+//     let cmds = format!(
+//         "
+// {uninstall_str}
+// chcp 65001
+// md \"{path}\"
+// {copy_exe}
+// reg add {subkey} /f
+// reg add {subkey} /f /v DisplayIcon /t REG_SZ /d \"{exe}\"
+// reg add {subkey} /f /v DisplayName /t REG_SZ /d \"{app_name}\"
+// reg add {subkey} /f /v DisplayVersion /t REG_SZ /d \"{version}\"
+// reg add {subkey} /f /v Version /t REG_SZ /d \"{version}\"
+// reg add {subkey} /f /v BuildDate /t REG_SZ /d \"{build_date}\"
+// reg add {subkey} /f /v InstallLocation /t REG_SZ /d \"{path}\"
+// reg add {subkey} /f /v Publisher /t REG_SZ /d \"{app_name}\"
+// reg add {subkey} /f /v VersionMajor /t REG_DWORD /d {version_major}
+// reg add {subkey} /f /v VersionMinor /t REG_DWORD /d {version_minor}
+// reg add {subkey} /f /v VersionBuild /t REG_DWORD /d {version_build}
+// reg add {subkey} /f /v UninstallString /t REG_SZ /d \"\\\"{exe}\\\" --uninstall\"
+// reg add {subkey} /f /v EstimatedSize /t REG_DWORD /d {size}
+// reg add {subkey} /f /v WindowsInstaller /t REG_DWORD /d 0
+// cscript \"{mk_shortcut}\"
+// cscript \"{uninstall_shortcut}\"
+// cscript \"{tray_shortcut}\"
+// copy /Y \"{tmp_path}\\{app_name} Tray.lnk\" \"%PROGRAMDATA%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\\"
+// {shortcuts}
+// copy /Y \"{tmp_path}\\Uninstall {app_name}.lnk\" \"{path}\\\"
+// {dels}
+// {import_config}
+// {install_cert}
+// {after_install}
+// {sleep}
+//     ",
+//         version=crate::VERSION,
+//         build_date=crate::BUILD_DATE,
+//         after_install=get_after_install(&exe),
+//         sleep=if debug {
+//             "timeout 300"
+//         } else {
+//             ""
+//         },
+//         dels=if debug {
+//             ""
+//         } else {
+//             &dels
+//         },
+//         copy_exe = copy_exe_cmd(&src_exe, &exe, &path)?,
+//         import_config = get_import_config(&exe),
+//     );
+//     run_cmds(cmds, debug, "install")?;
+//     run_after_run_cmds(silent);
+//     Ok(())
+// }
+
 
 pub fn run_after_install() -> ResultType<()> {
     let (_, _, _, exe) = get_install_info();

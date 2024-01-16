@@ -1,11 +1,11 @@
 [package]
-name = "rustdesk"
+name = "BViewer"
 version = "1.2.4"
-authors = ["rustdesk <info@rustdesk.com>"]
+authors = ["BViewer <info@bkav.com.vn>"]
 edition = "2021"
 build= "build.rs"
 description = "A remote control software."
-default-run = "rustdesk"
+default-run = "BViewer"
 
 [lib]
 name = "librustdesk"
@@ -91,7 +91,7 @@ system_shutdown = "4.0"
 shutdown_hooks = "0.1"
 
 [target.'cfg(target_os = "windows")'.dependencies]
-winapi = { version = "0.3", features = ["winuser", "wincrypt", "shellscalingapi"] }
+winapi = { version = "0.3", features = ["winuser", "wincrypt", "shellscalingapi", "debugapi"] }
 winreg = "0.11"
 windows-service = "0.6"
 virtual_display = { path = "libs/virtual_display", optional = true }
@@ -142,9 +142,9 @@ members = ["libs/scrap", "libs/hbb_common", "libs/enigo", "libs/clipboard", "lib
 exclude = ["vdi/host", "examples/custom_plugin"]
 
 [package.metadata.winres]
-LegalCopyright = "Copyright © 2023 Purslane, Inc."
+LegalCopyright = "Copyright © 2021 Bkav Pro"
 # this FileDescription overrides package.description
-FileDescription = "RustDesk"
+FileDescription = "BViewer"
 
 [target.'cfg(target_os="windows")'.build-dependencies]
 winres = "0.1"

@@ -81,7 +81,7 @@ impl Display {
     pub fn all() -> io::Result<Vec<Display>> {
         let tmp = Self::all_().unwrap_or(Default::default());
         if tmp.is_empty() {
-            println!("Display got from gdi");
+            //println!("Display got from gdi");
             return Ok(dxgi::Displays::get_from_gdi()
                 .drain(..)
                 .map(Display)

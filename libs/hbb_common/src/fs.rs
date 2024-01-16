@@ -771,6 +771,8 @@ pub async fn handle_read_jobs(
 ) -> ResultType<String> {
     let mut job_log = Default::default();
     let mut finished = Vec::new();
+    let mut jobs_log = String::new();
+
     for job in jobs.iter_mut() {
         if job.is_last_job {
             continue;
@@ -786,16 +788,20 @@ pub async fn handle_read_jobs(
             }
             Ok(None) => {
                 if job.job_completed() {
-                    job_log = serialize_transfer_job(job, true, false, "");
                     finished.push(job.id());
                     match job.job_error() {
                         Some(err) => {
                             job_log = serialize_transfer_job(job, false, false, &err);
-                            stream
-                                .send(&new_error(job.id(), err, job.file_num()))
-                                .await?
+                            jobs_log += &job_log;
+                            jobs_log += "|||";
+                            stream.send(&new_error(job.id(), err, job.file_num())).await?
                         }
-                        None => stream.send(&new_done(job.id(), job.file_num())).await?,
+                        None => {
+                            job_log = serialize_transfer_job(job, true, false, "");
+                            jobs_log += &job_log;
+                            jobs_log += "|||";
+                            stream.send(&new_done(job.id(), job.file_num())).await?
+                        }
                     }
                 } else {
                     // waiting confirmation.
@@ -803,10 +809,19 @@ pub async fn handle_read_jobs(
             }
         }
     }
+
     for id in finished {
         remove_job(id, jobs);
     }
-    Ok(job_log)
+
+    if jobs_log.len() > 0 {
+        // Xoa ky tu ||| o cuoi
+        jobs_log.pop();
+        jobs_log.pop();
+        jobs_log.pop();
+    }
+
+    Ok(jobs_log)
 }
 
 pub fn remove_all_empty_dir(path: &PathBuf) -> ResultType<()> {
