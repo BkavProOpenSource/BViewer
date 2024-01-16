@@ -1,0 +1,33 @@
+	GNU AFFERO GENERAL PUBLIC LICENSE
+   BViewer is free software developed based on open-source
+   RustDesk software; You may modify and distribute the
+   software under the terms of the GNU Affero General 
+   Public License version 3.0 published by the Free 
+   Software Foundation.
+  
+   This program is distributed with the expectation that it
+   will be useful but WITHOUT ANY WARRANTY; There is even 
+   no implied warranty as to the PRODUCT'S MERCHANTABILITY
+   or its FITNESS FOR USE FOR A PARTICULAR PURPOSE.
+
+   You can see the GNU Affero General Public License for 
+   more details <https://www.gnu.org/licenses/>
+   By using this software, you agree that:
+
+   1.The author is not responsible for any loss or damage 
+   arising directly or indirectly from the use of this 
+   software.
+   2. The software is provided "as available", without any 
+   warranty as to stability, accuracy or fitness for a 
+   particular purpose
+   3. You take full responsibility for testing, correcting
+   errors and protecting your data when using this software.
+   4. The author reserves the right to change or stop 
+   software development without prior notice.
+   5. You accept the risk of using the software and do not 
+   make any claims against the author.
+
+   If you do not agree to any of the above terms, you are
+   not authorized to use the BViewer software or any of 
+   its components. Continued use constitutes your full 
+   acceptance of these terms.
